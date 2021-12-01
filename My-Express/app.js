@@ -1,18 +1,24 @@
 const express = require('express');
-
+const fs = require('fs');
 const app = express();
 
 app.get('/', (request, response) => {
     response.send('Hello Express World!');
 })
 
-app.get('/another', (request, response) => {
-    response.send('Hello from another world!');
+app.get('/api/students', (request, response) => {
+    fs.readFile('./db.json', 'utf-8', (err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            const students = JSON.parse(data).students;
+            response.send(students);
+        }
+    })
 })
 
-app.get('/courses', (request, response) => {
-    response.send(JSON.stringify(["Habibur", "Nobel"]));
-})
+
 
 const port = 3000;
 app.listen(port, () => {
