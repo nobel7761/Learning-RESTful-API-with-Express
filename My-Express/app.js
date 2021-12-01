@@ -1,11 +1,20 @@
-const http = require('http');
+const express = require('express');
 
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        res.write('Hello World');
-        res.end();
-    }
+const app = express();
+
+app.get('/', (request, response) => {
+    response.send('Hello Express World!');
 })
 
-server.listen(3000);
-console.log('Listening on Port 3000...');
+app.get('/another', (request, response) => {
+    response.send('Hello from another world!');
+})
+
+app.get('/courses', (request, response) => {
+    response.send(JSON.stringify(["Habibur", "Nobel"]));
+})
+
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+})
