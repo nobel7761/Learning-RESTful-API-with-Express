@@ -61,6 +61,25 @@ app.put('/api/students/:id', (req, res) => {
         })
 })
 
+app.delete('/api/students/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    db.getDbStudents()
+        .then(students => {
+            const student = students.find(s => s.id === id);
+            if (!student) {
+                res.status(404).send('Not Found');
+            }
+            else {
+                const updatedStudents = students.filter(s => s.id !== id);
+                db.insertDbStudent(updatedStudents)
+                    .then(data => {
+                        res.send(student);
+                    })
+            }
+        })
+
+})
+
 const port = 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
