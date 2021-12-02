@@ -8,14 +8,14 @@ app.get('/', (request, response) => {
     response.send("Hello from express world!");
 })
 
-app.get('/api/students', (request, response) => {
+const studentList = (request, response) => {
     db.getDbStudents()
         .then(students => {
             response.send(students);
         })
-})
+}
 
-app.post('/api/students', (request, response) => {
+const newStudent = (request, response) => {
     const student = request.body;
     db.getDbStudents()
         .then(students => {
@@ -25,9 +25,9 @@ app.post('/api/students', (request, response) => {
                     response.send(data)
                 })
         })
-})
+}
 
-app.get('/api/students/:id', (request, response) => {
+const studentDetails = (request, response) => {
     const id = parseInt(request.params.id);
     db.getDbStudents()
         .then(students => {
@@ -39,9 +39,9 @@ app.get('/api/students/:id', (request, response) => {
                 response.send(student);
             }
         })
-})
+}
 
-app.put('/api/students/:id', (req, res) => {
+const studentUpdate = (req, res) => {
     const id = parseInt(req.params.id);
     const updatedData = req.body;
     db.getDbStudents()
@@ -59,9 +59,9 @@ app.put('/api/students/:id', (req, res) => {
                     })
             }
         })
-})
+}
 
-app.delete('/api/students/:id', (req, res) => {
+const studentDelete = (req, res) => {
     const id = parseInt(req.params.id);
     db.getDbStudents()
         .then(students => {
@@ -78,7 +78,17 @@ app.delete('/api/students/:id', (req, res) => {
             }
         })
 
-})
+}
+
+app.get('/api/students', studentList)
+
+app.post('/api/students', newStudent)
+
+app.get('/api/students/:id', studentDetails)
+
+app.put('/api/students/:id', studentUpdate)
+
+app.delete('/api/students/:id', studentDelete)
 
 const port = 3000;
 app.listen(port, () => {
