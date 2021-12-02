@@ -80,15 +80,14 @@ const studentDelete = (req, res) => {
 
 }
 
-app.get('/api/students', studentList)
+app.route('/api/students')
+    .get(studentList)
+    .post(newStudent)
 
-app.post('/api/students', newStudent)
-
-app.get('/api/students/:id', studentDetails)
-
-app.put('/api/students/:id', studentUpdate)
-
-app.delete('/api/students/:id', studentDelete)
+app.route('/api/students/:id')
+    .get(studentDetails)
+    .put(studentUpdate)
+    .delete(studentDelete)
 
 const port = 3000;
 app.listen(port, () => {
