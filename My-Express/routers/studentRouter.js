@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-
 const studentList = (request, response) => {
     db.getDbStudents()
         .then(students => {
@@ -10,79 +9,79 @@ const studentList = (request, response) => {
         })
 }
 
-const newStudent = (request, response) => {
+const addNewStudent = (request, response) => {
     const student = request.body;
     db.getDbStudents()
         .then(students => {
             students.push(student);
-            db.insertDbStudent(students)
+            db.insertDbStudents(students)
                 .then(data => {
-                    response.send(data)
+                    response.send(data);
                 })
         })
 }
 
-const studentDetails = (request, response) => {
+const searchStudent = (request, response) => {
     const id = parseInt(request.params.id);
     db.getDbStudents()
         .then(students => {
             const student = students.find(s => s.id === id);
             if (!student) {
-                response.status(404).send('No Student found with this ID');
+                response.status(404).send("No data found with this id");
             }
             else {
                 response.send(student);
             }
+
         })
 }
 
-const studentUpdate = (req, res) => {
-    const id = parseInt(req.params.id);
-    const updatedData = req.body;
+const updateStudent = (request, response) => {
+    const id = parseInt(request.params.id);
+    const updatedData = request.body;
     db.getDbStudents()
         .then(students => {
+            const i = students.findIndex(s => s.id === id);
             const student = students.find(s => s.id === id);
-            if (!student) {
-                res.status(404).send('No student found with this id');
-            }
-            else {
-                const i = students.findIndex(s => s.id === id);
-                students[i] = updatedData;
-                db.insertDbStudent(students)
-                    .then(data => {
-                        res.send(students);
-                    })
-            }
+            students[i] = updatedData;
+            db.insertDbStudents(students)
+                .then(data => {
+                    if (!student) {
+                        response.status(404).send("No data found with this id");
+                    }
+                    else {
+                        response.send(students);
+                    }
+                })
         })
 }
 
-const studentDelete = (req, res) => {
-    const id = parseInt(req.params.id);
+const deleteStudent = (request, response) => {
+    const id = parseInt(request.params.id);
     db.getDbStudents()
         .then(students => {
             const student = students.find(s => s.id === id);
-            if (!student) {
-                res.status(404).send('Not Found');
-            }
-            else {
-                const updatedStudents = students.filter(s => s.id !== id);
-                db.insertDbStudent(updatedStudents)
-                    .then(data => {
-                        res.send(student);
-                    })
-            }
+            const updatedStudents = students.filter(s => s.id !== id);
+            db.insertDbStudents(updatedStudents)
+                .then(data => {
+                    if (!student) {
+                        response.status(404).send("No data found with this id");
+                    }
+                    else {
+                        response.send(students);
+                    }
+                })
         })
-
 }
 
 router.route('/')
     .get(studentList)
-    .post(newStudent)
+    .post(addNewStudent)
 
 router.route('/:id')
-    .get(studentDetails)
-    .put(studentUpdate)
-    .delete(studentDelete)
+    .get(searchStudent)
+    .put(updateStudent)
+    .delete(deleteStudent)
 
 
 module.exports = router;
